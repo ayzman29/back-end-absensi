@@ -11,7 +11,7 @@ import Absensi from './model/absensi.model';
 export class AppService {
   validateUser(name: string, password: string): SiteUser | null {
     return (
-      this.users.find(
+      this.userArray.find(
         (user) => user.name === name && user.password === password,
       ) || null
     );
@@ -19,71 +19,71 @@ export class AppService {
 
   private absensiArray: Absensi[] = [];
 
-  private users: SiteUser[] = [
+  private userArray: SiteUser[] = [
     new SiteUser(
       '550e8400-e29b-41d4-a716-446655440000',
-      'JohnDoe',
-      'P@ssw0rd123',
+      'Raprast',
+      'raka2212',
       'BlackGold Rig 21',
     ),
     new SiteUser(
       '6f9619ff-8b86-d011-b42d-00cf4fc964ff',
-      'AliceSmith',
-      'Alice2024!',
+      'Raplii',
+      'rapliakbar',
       'DeepWell Alpha',
     ),
     new SiteUser(
       '7f8c1d8e-3a2f-4b74-9a3f-1f7636d5b45f',
-      'BobJones',
-      'Secure#789',
+      'EkiPratama',
+      'eki0708',
       'Offshore Bravo 7',
     ),
     new SiteUser(
       '3d1f3c77-91ff-4852-9b07-f4f8a732d29d',
-      'CharlieM',
-      'Pass123$',
+      'Gusti',
+      'gusti12@',
       'Desert Rig Delta',
     ),
     new SiteUser(
       'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-      'DianaR',
-      'Diana!2023',
+      'Pramudya',
+      'udiik07!',
       'Northern Basin 15',
     ),
     new SiteUser(
       'c001d00d-f00d-4a5e-bad1-deadbeefcafe',
-      'EvanK',
-      'Ev@nKpass',
+      'IkhwanAdi',
+      'bucin4ever',
       'Gulf Drilling 42',
     ),
     new SiteUser(
       'b1e2a3d4-c5f6-7890-abcd-deadfacedead',
-      'FionaL',
-      'F1ona#Pwd',
+      'M.Ayubi',
+      'hindun07',
       'Rocky Oil Patch',
     ),
     new SiteUser(
       '5e4d3c2b-1a09-8765-4321-fedcba987654',
-      'GeorgeB',
-      'G3orge2022!',
+      'RositaTumangke',
+      'sita1303!',
       'Arctic Well Z-9',
     ),
     new SiteUser(
       'deadbeef-cafe-4bad-babe-feedfacefeed',
-      'HannahW',
-      'H@nnah987',
+      'fattafz',
+      'fatta2904',
       'Deepwater Horizon',
     ),
     new SiteUser(
       'cafebabe-dead-beef-0000-000000000000',
-      'IanT',
-      'Ian_Pass!23',
+      'Jimoy',
+      'Tokipar4kang',
       'Texas Shale 88',
     ),
   ];
 
   getTopUsers(count: number = 5): SiteUser[] {
-    return this.users.slice(0, count);
+    return this.userArray.slice(0, count);
   }
 
   addUser(name: string, password: string, site: string): string {
@@ -91,7 +91,7 @@ export class AppService {
       throw new Error('Name, password, and site are required');
     }
 
-    const existingUser = this.users.find((user) => user.name === name);
+    const existingUser = this.userArray.find((user) => user.name === name);
     if (existingUser) {
       throw new Error('User with this name already exists');
     }
@@ -99,19 +99,28 @@ export class AppService {
     const id = this._generateUUID();
 
     const newUser = new SiteUser(id, name, password, site);
-    this.users.push(newUser);
+    this.userArray.push(newUser);
     return 'User added successfully';
   }
 
   private readonly SECRET_KEY = 'your_super_secure_secret_key_123!'; // Gantilah dengan key yang lebih kuat
 
   deleteUser(name: string): string {
-    const index = this.users.findIndex((user) => user.name === name);
+    const index = this.userArray.findIndex((user) => user.name === name);
     if (index === -1) {
       throw new Error('User not found');
     }
-    this.users.splice(index, 1);
+    this.userArray.splice(index, 1);
     return 'User deleted successfully';
+  }
+
+  deleteAbsensi(id: string): string {
+    const index = this.absensiArray.findIndex((absensi) => absensi.id === id);
+    if (index === -1) {
+      throw new Error('Id not found');
+    }
+    this.absensiArray.splice(index, 1);
+    return 'Absensi deleted';
   }
 
   addAbsensi(
@@ -125,7 +134,7 @@ export class AppService {
     remarks: string,
     accountId: string,
   ) {
-    const user = this.users.find((user) => user.id === accountId);
+    const user = this.userArray.find((user) => user.id === accountId);
     if (!user) {
       throw new Error('User not found');
     }
@@ -149,8 +158,34 @@ export class AppService {
     return this.absensiArray;
   }
 
+  updateAbsensi(
+    id: string,
+    endDate: string,
+    endImageUrl: string,
+    remarks: string,
+  ) {
+    const indexAbsensi = this.absensiArray.findIndex(
+      (absensi) => absensi.id === id,
+    );
+    if (indexAbsensi === -1) {
+      throw new Error('Id not found');
+    }
+
+    if (endDate) {
+      this.absensiArray[indexAbsensi].endDate = endDate;
+    }
+    if (endImageUrl) {
+      this.absensiArray[indexAbsensi].endImageUrl = endImageUrl;
+    }
+    if (remarks) {
+      this.absensiArray[indexAbsensi].remarks = remarks;
+    }
+
+    return this.absensiArray[indexAbsensi];
+  }
+
   updateUser(name: string, password: string, site: string): string {
-    const user = this.users.find((user) => user.name === name);
+    const user = this.userArray.find((user) => user.name === name);
     if (!user) {
       throw new Error('User not found');
     }

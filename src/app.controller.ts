@@ -254,6 +254,11 @@ export class AppController {
     return this.appService.deleteUser(name);
   }
 
+  @Delete('DeleteAbsensi')
+  deleteAbsensi(@Body('id') id: string): string {
+    return this.appService.deleteAbsensi(id);
+  }
+
   @Put('Update')
   updateUser(@Body() body: { name: string; password: string; site: string }) {
     const { name, password, site } = body;
@@ -306,6 +311,47 @@ export class AppController {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Add User',
         errorMessage: 'Absensi Failed',
+        data: { result: null },
+      };
+    }
+  }
+
+  @Put('UpdateAbsensi')
+  updateAbsensi(
+    @Body('Id') Id: string,
+    @Body('endDate') endDate: string,
+    @Body('endImageUrl') endImageUrl: string,
+    @Body('remarks') remarks: string,
+  ) {
+    try {
+      const result = this.appService.updateAbsensi(
+        Id,
+        endDate,
+        endImageUrl,
+        remarks,
+      );
+      if (result === null || Number.isNaN(result) || result === undefined) {
+        return {
+          status: 'failed',
+          code: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Update Absensi',
+          errorMessage: 'Update Failed',
+          data: { result: null },
+        };
+      }
+      return {
+        status: 'success',
+        code: HttpStatus.OK,
+        message: 'Update Absensi Success',
+        data: { result },
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: 'failed',
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Update Absensi',
+        errorMessage: 'Update Failed',
         data: { result: null },
       };
     }
